@@ -1,10 +1,11 @@
-// primes.c
+// eratosthenes.c
 // Riešenie IJC-DU1 príklad a) 19.3.2021
 // Autor: Adam Rajko, FIT
 // Preložené: gcc 9.3.0
 // Implementácia Eratostenovho sita
 
 #include <math.h>
+#include "eratosthenes.h"
 #include "bitset.h"
 
 void Eratosthenes(bitset_t pole)
