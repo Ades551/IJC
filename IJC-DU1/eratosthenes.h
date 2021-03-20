@@ -1,4 +1,4 @@
-// primes.c
+// eratosthenes.h
 // Riešenie IJC-DU1 príklad a) 19.3.2021
 // Autor: Adam Rajko, FIT
 // Preložené: gcc 9.3.0
