@@ -8,6 +8,7 @@
 #include <time.h>
 #include "bitset.h"
 #include "eratosthenes.h"
+#include "error.h"
 
 // limit prvocisel
 #define N 200000000
