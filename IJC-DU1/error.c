@@ -1,4 +1,4 @@
-// primes.c
+// error.c
 // Riešenie IJC-DU1 príklad a) 19.3.2021
 // Autor: Adam Rajko, FIT
 // Preložené: gcc 9.3.0
@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include "error.h"
 
 void warning_msg(const char *fmt, ...)
 {
