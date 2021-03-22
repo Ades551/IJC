@@ -4,7 +4,6 @@
 // Preložené: gcc 9.3.0
 // Implementácia dešifrovania tajnej správy
 
-#include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
 #include "error.h"
@@ -16,14 +15,13 @@ int main(int argc, char const *argv[])
 {
     // ocakavany input iba cesta k ppm suboru
     if(argc != 2)
-        error_exit("Expected 1 input!\n");
+        error_exit("Ocakavany 1 argument!\n");
 
     struct ppm *image = ppm_read(argv[1]);
 
     // nepodarilo sa nacitat data
     if(image == NULL)
-        error_exit("Failed to load data from ppm file!");
-
+        error_exit("Nepodarilo sa nacitat data z ppm suboru!");
 
     unsigned long data_size = image->xsize * image->ysize * 3;
 
@@ -40,7 +38,7 @@ int main(int argc, char const *argv[])
         {
             // xxx1, xx01, x101, 0101
             // postupne pridavanie bitov do charu
-            message_char |= (1 & image->data[i]) << count; 
+            message_char |= (1 & image->data[i]) << count;
             count++;
             if(count == CHAR_BIT)
             {
@@ -48,6 +46,7 @@ int main(int argc, char const *argv[])
                 {
                     bitset_free(primes);
                     ppm_free(image);
+                    putchar('\n');
                     break;
                 }
                 else
