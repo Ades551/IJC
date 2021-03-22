@@ -15,7 +15,7 @@
 typedef unsigned long bitset_t[];
 typedef unsigned long bitset_index_t;
 
-#define MAX_SIZE 20000000
+#define MAX_SIZE 200000000
 
 // velkost indexu bitoveho pola
 #define ARR_INDEX_SIZE (CHAR_BIT*sizeof(unsigned long))
@@ -36,10 +36,11 @@ typedef unsigned long bitset_index_t;
 
 // dynamicka alokacia
 #define bitset_alloc(name, size) \
-    static_assert(size > 1, "chyba pri preklade"); \
+    assert(size > 1); \
     assert(size <= MAX_SIZE); \
     unsigned long *name = calloc((size / ARR_INDEX_SIZE) + 2, sizeof(bitset_index_t)); \
-    (name != NULL) ? (name[0] = size) : (error_exit("chyba alokacie pamate"))
+    if(name != NULL){name[0] = size;} \
+    else{error_exit("chyba alokacie pamate");}
 
 #ifndef USE_INLINE
 
