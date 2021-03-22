@@ -12,8 +12,8 @@ void Eratosthenes(bitset_t pole)
 {
     unsigned long size = bitset_size(pole); // velkost pola
 
-    bitset_setbit(pole, 0, 1);
-    bitset_setbit(pole, 1, 1);
+    BITSET(pole, 0, 1);
+    BITSET(pole, 1, 1);
 
     // Eratostenovo sito
     for(unsigned long i = 2; i < sqrt(size); i++)
