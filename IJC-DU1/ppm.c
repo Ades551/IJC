@@ -73,6 +73,12 @@ struct ppm *ppm_read(const char *filename)
     
     image = malloc(sizeof(struct ppm) + 3*x*y);
 
+    if(image == NULL)
+    {
+        warning_msg("warning_ppm: Nepodarilo sa alokovat pamat!");
+        goto error_ppm;
+    }
+
     image->xsize = x;
     image->ysize = y;
 
