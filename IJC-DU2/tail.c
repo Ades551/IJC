@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 #define PRINT_LINE 10
-#define LINE_LENGTH 20
+#define MAX_LINE_LENGTH 100
 
 int isNumber(const char* number){
     unsigned len = strlen(number);
@@ -62,18 +62,18 @@ int main(int argc, const char *argv[]){
     char **arr; // 2D array --> arr[line_index][index]
     bool next_line = false;
     bool dump = false; // dump line
+    bool line_exceed = false;
 
     arr = malloc(sizeof(char *)); // allocate array of pointers
     if(arr == NULL){
         fprintf(stderr, "Error: malloc() failed!\n");
     }
-    arr[line_index] = malloc(LINE_LENGTH); // allocate max line length
+    arr[line_index] = malloc(MAX_LINE_LENGTH); // allocate max line length
     if(arr[line_index] == NULL){
         fprintf(stderr, "Error: malloc() failed!\n");
     }
 
-    while((c = fgetc(file)) != EOF)
-    {
+    while((c = fgetc(file)) != EOF){
         // dump line
         if(dump){
             while ((c = fgetc(file)) != '\n');
@@ -83,7 +83,11 @@ int main(int argc, const char *argv[]){
             if(c == '\n'){
                 next_line = true;
             }
-            else if(index == LINE_LENGTH){
+            else if(index == MAX_LINE_LENGTH){
+                if(!line_exceed) {
+                    fprintf(stderr, "Line exceeded max lenght of %u characters!\n", MAX_LINE_LENGTH);
+                    line_exceed = true;
+                }
                 dump = true;
                 continue;
             }
@@ -97,7 +101,7 @@ int main(int argc, const char *argv[]){
                 fprintf(stderr, "Error: realloc() failed!\n");
                 exit(1);
             }
-            arr[line_index] = malloc(LINE_LENGTH + 1);
+            arr[line_index] = malloc(MAX_LINE_LENGTH + 1);
             if(arr[line_index] == NULL){
                 fprintf(stderr, "Error: malloc() failed!\n");
                 exit(1);
@@ -107,7 +111,7 @@ int main(int argc, const char *argv[]){
         } else {
             arr[line_index][index] = c;
             index++;            
-        }        
+        }
     }
 
     int print_index = (line_index + 1) - line_print; // starting index for printing
