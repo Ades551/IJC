@@ -67,10 +67,12 @@ int main(int argc, const char *argv[]){
     arr = malloc(sizeof(char *)); // allocate array of pointers
     if(arr == NULL){
         fprintf(stderr, "Error: malloc() failed!\n");
+        exit(1);
     }
     arr[line_index] = malloc(MAX_LINE_LENGTH); // allocate max line length
     if(arr[line_index] == NULL){
         fprintf(stderr, "Error: malloc() failed!\n");
+        exit(1);
     }
 
     while((c = fgetc(file)) != EOF){
@@ -126,7 +128,12 @@ int main(int argc, const char *argv[]){
         printf("%s\n", arr[i]);
     }
 
+    for(unsigned i = 0; i <= line_index; i++){
+        free(arr[i]);
+    }
+
     free(arr);
+    fclose(file);
 
     return 0;
 }
