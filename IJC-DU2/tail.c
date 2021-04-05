@@ -1,3 +1,9 @@
+// tail.c
+// Riešenie IJC-DU2 príklad a) 5.4.2021
+// Autor: Adam Rajko, FIT
+// Preložené: gcc 9.3.0
+// Implementácia výpisu konca súboru
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,8 +17,8 @@ int isNumber(const char* number){
     unsigned len = strlen(number);
     
     for(unsigned i = 0; i < len; i++){
-        // check if first char is '+'
-        if('+' == number[i] && i == 0){
+        // check if first char is '+' or '-'
+        if( ('+' == number[i] || '-' == number[i]) && i == 0){
             i++;
         }
         if(!(isdigit(number[i]))){
@@ -24,8 +30,9 @@ int isNumber(const char* number){
 }
 
 int main(int argc, const char *argv[]){
-    unsigned line_print = PRINT_LINE; // default line length
+    int line_print = PRINT_LINE; // default line length
     FILE *file = stdin; // default input
+    bool print_index_plus = false; // if -n arg count '+'
 
 
     if(argc > 4){
@@ -36,15 +43,25 @@ int main(int argc, const char *argv[]){
     for(int i = 1; i < argc; i++){
         // check if -n is an option
         if(strcmp("-n", argv[i]) == 0){
-            // check if number is positive
+            // check if next arg exists
+            if((i + 1) == argc){
+                fprintf(stderr, "-n value not found!\n");
+                exit(1);
+            }
+            // check if number
             if(isNumber(argv[++i])){
-                // check if number is not zero
-                if((line_print = atoi(argv[i])) == 0){
-                    fprintf(stderr, "Error: Number is equal to zero!\n");
+                // check if first char is '+'
+                if(argv[i][0] == '+'){
+                    print_index_plus = true;
+                }
+
+                // check if number is less or equal to zero
+                if((line_print = atoi(argv[i])) <= 0){
+                    fprintf(stderr, "Error: Number is equal or less than zero!\n");
                     exit(1);
                 }
             } else {
-                fprintf(stderr, "Error: Number is NaN or less than zero!\n");
+                fprintf(stderr, "Error: -n arg is NaN!\n");
                 exit(1);
             }
         } else {
@@ -69,7 +86,7 @@ int main(int argc, const char *argv[]){
         fprintf(stderr, "Error: malloc() failed!\n");
         exit(1);
     }
-    arr[line_index] = malloc(MAX_LINE_LENGTH); // allocate max line length
+    arr[line_index] = malloc(MAX_LINE_LENGTH + 1); // allocate max line length
     if(arr[line_index] == NULL){
         fprintf(stderr, "Error: malloc() failed!\n");
         exit(1);
@@ -78,7 +95,11 @@ int main(int argc, const char *argv[]){
     while((c = fgetc(file)) != EOF){
         // dump line
         if(dump){
-            while ((c = fgetc(file)) != '\n');
+            // if new line missing
+            while ((c = fgetc(file)) != EOF){
+                if(c == '\n')
+                    break;
+            }
             next_line = true;
             dump = false;
         } else {
@@ -87,7 +108,6 @@ int main(int argc, const char *argv[]){
             }
             else if(index == MAX_LINE_LENGTH){
                 if(!line_exceed) {
-                    fprintf(stderr, "Line exceeded max lenght of %u characters!\n", MAX_LINE_LENGTH);
                     line_exceed = true;
                 }
                 dump = true;
@@ -96,17 +116,21 @@ int main(int argc, const char *argv[]){
         }
 
         if(next_line){
-            arr[line_index][index] = '\0'; // set ending char
-            line_index++;
-            arr = realloc(arr, (line_index + 1) * sizeof(char *)); // reallocate array
-            if(arr == NULL){
-                fprintf(stderr, "Error: realloc() failed!\n");
-                exit(1);
-            }
-            arr[line_index] = malloc(MAX_LINE_LENGTH + 1);
-            if(arr[line_index] == NULL){
-                fprintf(stderr, "Error: malloc() failed!\n");
-                exit(1);
+            arr[line_index][index] = (c == '\n') ? '\n' : '\0'; // ending of line
+            arr[line_index][index + 1] = '\0'; // set ending char
+            // realloc only when not EOF
+            if(c != EOF){
+                line_index++;
+                arr = realloc(arr, (line_index + 1) * sizeof(char *)); // reallocate array
+                if(arr == NULL){
+                    fprintf(stderr, "Error: realloc() failed!\n");
+                    exit(1);
+                }
+                arr[line_index] = malloc(MAX_LINE_LENGTH + 1);
+                if(arr[line_index] == NULL){
+                    fprintf(stderr, "Error: malloc() failed!\n");
+                    exit(1);
+                }
             }
             index = 0; // reset indexing
             next_line = false;
@@ -116,7 +140,13 @@ int main(int argc, const char *argv[]){
         }
     }
 
-    int print_index = (line_index + 1) - line_print; // starting index for printing
+    int print_index; // start index for printing
+
+    if(print_index_plus){
+        print_index = line_print - 1;
+    } else {
+        print_index = line_index + 1 - line_print;
+    }
 
     // check if less than zero
     if(print_index < 0){
@@ -125,7 +155,11 @@ int main(int argc, const char *argv[]){
 
     // print
     for(unsigned i = print_index; i <= line_index; i++){
-        printf("%s\n", arr[i]);
+        if(line_exceed){
+            fprintf(stderr, "Line exceeded max lenght of %u characters!\n", MAX_LINE_LENGTH);
+            line_exceed = false;
+        }
+        printf("%s", arr[i]);
     }
 
     for(unsigned i = 0; i <= line_index; i++){
