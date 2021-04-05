@@ -13,21 +13,7 @@
 #define PRINT_LINE 10
 #define MAX_LINE_LENGTH 100
 
-int isNumber(const char* number){
-    unsigned len = strlen(number);
-    
-    for(unsigned i = 0; i < len; i++){
-        // check if first char is '+' or '-'
-        if( ('+' == number[i] || '-' == number[i]) && i == 0){
-            i++;
-        }
-        if(!(isdigit(number[i]))){
-            return 0;
-        }
-    }
-
-    return 1;
-}
+int isNumber(const char* number);
 
 int main(int argc, const char *argv[]){
     int line_print = PRINT_LINE; // default line length
@@ -170,4 +156,20 @@ int main(int argc, const char *argv[]){
     fclose(file);
 
     return 0;
+}
+
+int isNumber(const char* number){
+    unsigned len = strlen(number);
+    
+    for(unsigned i = 0; i < len; i++){
+        // check if first char is '+' or '-'
+        if( ('+' == number[i] || '-' == number[i]) && i == 0){
+            i++;
+        }
+        if(!(isdigit(number[i]))){
+            return 0;
+        }
+    }
+
+    return 1;
 }
