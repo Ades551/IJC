@@ -67,14 +67,14 @@ int main(int argc, const char *argv[]){
     bool dump = false; // dump line
     bool line_exceed = false;
 
-    arr = malloc(sizeof(char *)); // allocate array of pointers
+    arr = calloc(1, sizeof(char *)); // allocate array of pointers
     if(arr == NULL){
-        fprintf(stderr, "Error: malloc() failed!\n");
+        fprintf(stderr, "Error: calloc() failed!\n");
         exit(1);
     }
-    arr[line_index] = malloc(MAX_LINE_LENGTH + 1); // allocate max line length
+    arr[line_index] = calloc(MAX_LINE_LENGTH + 2, 1); // allocate max line length
     if(arr[line_index] == NULL){
-        fprintf(stderr, "Error: malloc() failed!\n");
+        fprintf(stderr, "Error: calloc() failed!\n");
         exit(1);
     }
 
@@ -82,10 +82,7 @@ int main(int argc, const char *argv[]){
         // dump line
         if(dump){
             // if new line missing
-            while ((c = fgetc(file)) != EOF){
-                if(c == '\n')
-                    break;
-            }
+            while ((c = fgetc(file)) != EOF && c != '\n');
             next_line = true;
             dump = false;
         } else {
@@ -112,9 +109,9 @@ int main(int argc, const char *argv[]){
                     fprintf(stderr, "Error: realloc() failed!\n");
                     exit(1);
                 }
-                arr[line_index] = malloc(MAX_LINE_LENGTH + 1);
+                arr[line_index] = calloc(MAX_LINE_LENGTH + 2, 1);
                 if(arr[line_index] == NULL){
-                    fprintf(stderr, "Error: malloc() failed!\n");
+                    fprintf(stderr, "Error: calloc() failed!\n");
                     exit(1);
                 }
             }
@@ -122,7 +119,7 @@ int main(int argc, const char *argv[]){
             next_line = false;
         } else {
             arr[line_index][index] = c;
-            index++;            
+            index++;
         }
     }
 
