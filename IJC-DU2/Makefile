@@ -21,7 +21,7 @@ wordcount: wordcount.o libhtab.a io.o
 	$(CC) $(CFLAGS) $^ -static -o $@
 
 # wordcount dynamic
-wordcount-dynamic: wordcount.o libhtab.so io.o # TODO add dynamic linking
+wordcount-dynamic: wordcount.o libhtab.so io.o
 	$(CC) $(CFLAGS) $^ -L. -lhtab -o $@
 # $(CC) $(CFLAGS) $^ -L. -Wl,-rpath=. -lhtab -o $@     # for rpath build
 
