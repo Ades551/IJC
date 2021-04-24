@@ -135,6 +135,9 @@ int main(int argc, const char *argv[]){
     if(print_index < 0){
         print_index = 0; // print from first line
     }
+    else if(print_index > (int) line_index){
+        print_index = line_index + 1;
+    }
 
     // print
     for(unsigned i = print_index; i <= line_index; i++){
